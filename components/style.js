@@ -20,7 +20,12 @@ export const StyledContainer = styled.View`
   background-color: ${white};
   padding-top: ${StatusBarHeight + 30}px;
 `;
+export const HeaderContainer =styled.View`
+  flex: 1;
+  width: 100%;
+  align-items: center;
 
+`
 export const InnerContainer = styled.View`
   flex: 1;
   width: 100%;
@@ -28,7 +33,7 @@ export const InnerContainer = styled.View`
 `;
 
 export const WelcomeContainer = styled(InnerContainer)`
-  padding: 25px;
+  padding: 30px;
   padding-top: 10px; 
   justify-content: center; 
 `;
@@ -44,8 +49,8 @@ export const Avatar = styled.Image`
  margin-top: 10px;
 `;
 export const WelcomeImage = styled.Image`
-height: 50%;
-max-width: 100%;
+height: 25%;
+max-width: 20%;
 `;
 
 export const PageLogo = styled.Image`
@@ -60,7 +65,9 @@ export const PageTitle = styled.Text`
   color: ${primary.main};
   padding: 10px;
   ${(props) => props.welcome &&`
- font-size:35px;`};
+ font-size:20px;
+ color: ${primary.dark}; `};
+ 
 `;
 export const SubTitle = styled.Text`
     font-size: 18px;
@@ -115,6 +122,10 @@ export const StyledButton = styled.TouchableOpacity`
  flex-direction: row;
  justify-content: center;
  `}
+ ${(props) => props.welcome &&`
+ font-size:20px;
+ 
+ color: ${primary.dark}; `};
 `;
 export const ButtonText = styled.Text`
 color:${white};
@@ -159,6 +170,13 @@ color:${primary.dark};
 font-size: 15px;
 
 `
-
-
+export const StyledLogoutButton = styled.TouchableOpacity`
+ padding: 15px;
+ background-color : ${primary.dark};
+ justify-content: center;
+ align-items: center;
+ border-radius:5px;
+ margin-vertical:5px;
+ height:60px;
+`;
 

@@ -3,7 +3,7 @@ import React from 'react';
 //Keyboard avoiding view
 import {KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback,Keyboard} from 'react-native';
 
-const KeyBoardAvoidingWrapper = ({children}) =>{
+ const KeyBoardAvoidingWrapper = ({children}) =>{
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
       <ScrollView>

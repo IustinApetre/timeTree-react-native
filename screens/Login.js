@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 
+import * as Google from 'expo-google-app-auth';
+
 // icons
 import {Octicons,Ionicons, Fontisto} from "@expo/vector-icons";
 import {
@@ -46,9 +48,10 @@ const Login = ({navigation}) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   //context
-  const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+  const { setStoredCredentials} = useContext(CredentialsContext);
   const handleLogin = (credentials, setSubmitting) => {
 
     const url = `https://fierce-lowlands-23983-82fa6bb73787.herokuapp.com/user/signin`
@@ -78,9 +81,43 @@ const handleMessage = (message, type=`FAILED` ? primary.main : primary.dark) =>{
   setMessage(message);
   setMessageType(type);
 }
+
+
+
+
 const handleGoogleSignin = () => {
-const config = {iosClientId: `524265652234-fb4vdo27vlj0gcdn5u4s03vseb4vh54i.apps.googleusercontent.com`}
+    setGoogleSubmitting(true);
+const config = {iosClientId: `524265652234-vuoj9ma4rhfuad5ejgm1jpc80o84pn38.apps.googleusercontent.com`,
+  androidClientId:`524265652234-622btkvbad4mrnc85hej8s7uliaipmhn.apps.googleusercontent.com`,
+  scopes: [`profile`, `email`]
+};
+Google.logInAsync(config)
+  .then((result)=>{
+    const {type, user } = result;
+    if (type === `success`){
+      const {email, name, photoUrl} = user;
+      handleMessage(`Google signin successful`, `SUCCESS`);
+      setTimeout(()=> navigation.navigate(`Welcome`, {email, name, photoUrl}), 1000);
+    }
+    else
+    {
+      handleMessage("Google signin was cancelled")
+    }
+    setGoogleSubmitting(false);
+  })
+  .catch(error=>{
+    console.log(error);
+    handleMessage("An error occurred. Check your network and try again");
+    setGoogleSubmitting(false);
+  })
   }
+
+
+
+
+
+
+
 const persistLogin = (credentials, message, status) => {
     AsyncStorage.setItem(`timeTreeCredentials`, JSON.stringify(credentials))
       .then(()=>{
@@ -151,12 +188,19 @@ const persistLogin = (credentials, message, status) => {
                   </StyledButton>
                 )}
                 <Line />
-                <StyledButton google={true} onPress={formikProps.handleSubmit}>
+
+                {!googleSubmitting && (<StyledButton google={true} onPress={handleGoogleSignin}>
 
                   <Fontisto name={"google"} color={Colors.white} size={25} />
                   <ButtonText google={true}> Sign in with Google </ButtonText>
 
-                </StyledButton>
+                </StyledButton>)}
+                {googleSubmitting&& (<StyledButton google={true} disabled={true}>
+
+                   <ActivityIndicator size="large" color={Colors.primary.main} />
+                  <ButtonText google={true}> Sign in with Google </ButtonText>
+
+                </StyledButton>)}
                 <ExtraView>
                   <ExtraText>Don't have an account already?</ExtraText>
                   <TextLink onPress={() => navigation.navigate('Signup')}>
