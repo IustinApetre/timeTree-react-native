@@ -1,7 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors, GreetingText, TaskText, TaskView, WelcomeContainer } from '../components/style';
-import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActiveFilterButton,
+  ActiveFilterButtonText,
+  AddButton,
+  Colors, CompletedTasksText, CompletedTaskText,
+  DateText, FilterButton, FilterButtonText,
+  FilterContainer,
+  GreetingText, LogoutButton,
+  TaskText,
+  TaskView,
+  WelcomeContainer,
+} from '../components/style';
+import { Alert, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { useFormik } from 'formik';
@@ -18,12 +29,9 @@ const Welcome = () => {
   const [myTasks, setMyTasks] = useState([]);
   const {} = storedCredentials;
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentTaskId, setCurrentTaskId] = useState(null);
-  const [newTitle, setNewTitle] = useState('');
+  const [todo,setTodo] = useState();
   const filterCategories = ['All', 'Personal', 'Work'];
   const currentDate = moment().format('DD MMMM YYYY');
-
-  const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false); // State for modal visibility
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [filteredTasks, setFilteredTasks] = useState([]);
   const filteredIncompleteTasks = filteredTasks.filter(task => !task.completed);
@@ -98,9 +106,13 @@ const Welcome = () => {
     );
   };
 
-  const openEditModal = (taskId, title) => {
-    setCurrentTaskId(taskId);
-    setNewTitle(title);
+  const openEditModal = (todo) => {
+    setTodo(todo);
+    setIsModalVisible(true);
+  };
+
+  const openAddModal = (todo) => {
+    setTodo({title: '', category: 'Personal' });
     setIsModalVisible(true);
   };
 
@@ -148,8 +160,8 @@ const Welcome = () => {
       try {
         const response = await axios.post(`${baseUrl}/task/tasks`, {
           user: storedCredentials._id,
-          title: values.title,
-          category: values.category,
+          title: todo.title,
+          category: todo.category,
         });
         // Acțiuni după trimiterea cu succes...
         resetForm();
@@ -159,12 +171,6 @@ const Welcome = () => {
       }
     },
   });
-
-  const toggleAddTaskModalVisible = () => {
-    setIsAddTaskModalVisible(!isAddTaskModalVisible); // Toggle modal visibility
-  };
-
-
 
   const toggleTaskCompleted = async (taskId, isCompleted) => {
     const url = `${baseUrl}/task/tasks/${taskId}/toggleCompleted`; // Presupunem că acesta este endpoint-ul tău
@@ -182,80 +188,50 @@ const Welcome = () => {
     updateMyTasks();
   };
 
-  const saveTask = async (id, newTitle) => {
-    const url = `${baseUrl}/task/tasks/${id}`; // Asigură-te că este corect
-    try {
-      const response = await axios.put(url, { title: newTitle });
-
-      updateMyTasks(); // Reîmprospătează lista de task-uri
+  const saveTask = async (id, newTitle, newCategory) => {
+    if (!id) {
+      setTodo({title: newTitle, category: newCategory});
+      formik.handleSubmit();
       setIsModalVisible(false);
-    } catch (error) {
-      console.error("Eroare la actualizarea task-ului", error.response ? error.response.data : error);
+    } else {
+      const url = `${baseUrl}/task/tasks/${id}`; // Asigură-te că este corect
+      try {
+        const response = await axios.put(url, { title: newTitle, category: newCategory });
+
+        updateMyTasks(); // Reîmprospătează lista de task-uri
+        setIsModalVisible(false);
+      } catch (error) {
+        console.error("Eroare la actualizarea task-ului", error.response ? error.response.data : error);
+      }
     }
   };
 
   return (
     <WelcomeContainer>
-      <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
+      <LogoutButton onPress={handleLogoutPress}>
         <Icon name="logout" size={30} color={Colors.black} />
-      </TouchableOpacity>
+      </LogoutButton>
       <GreetingText>Hello, {storedCredentials.name}!</GreetingText>
-      <Text style={styles.dateText}>{currentDate}</Text>
-      <TouchableOpacity onPress={() => toggleAddTaskModalVisible()} style={styles.addButton}>
+      <DateText>{currentDate}</DateText>
+      <AddButton onPress={openAddModal}>
         <Icon name="add" size={30} color={Colors.white} />
-      </TouchableOpacity>
-      <Modal visible={isAddTaskModalVisible} animationType="slide"
-             onRequestClose={() => setIsAddTaskModalVisible(false)}>
-        <View style={styles.modalView}>
-          <TextInput
-            style={styles.input}
-            value={formik.values.title}
-            onChangeText={formik.handleChange('title')}
-            placeholder='Task Name'
-            placeholderTextColor={Colors.black}
-          />
-          <Text>Select Task Category:</Text>
-          <Picker
-            selectedValue={formik.values.category}
-            onValueChange={formik.handleChange('category')}
-            style={{ height: 50, width: '100%' }}
-          >
-            <Picker.Item label="Personal" value="Personal" />
-            <Picker.Item label="Work" value="Work" />
-          </Picker>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: Colors.secondary.main }]}
-              onPress={() => {
-                formik.handleSubmit();
-                setIsAddTaskModalVisible(false);
-              }}
-            >
-              <Text style={styles.modalButtonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: Colors.grey.lighter }]}
-              onPress={() => setIsAddTaskModalVisible(false)}
-            >
-              <Text style={styles.modalButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-
-
-        </View>
-      </Modal>
-      <View style={styles.filterContainer}>
-        {filterCategories.map(category => (
-          <TouchableOpacity
+      </AddButton>
+      <FilterContainer>
+        {filterCategories.map(category => {
+          const FilterButtonComponent = selectedFilter === category ? ActiveFilterButton : FilterButton;
+          const FilterButtonTextComponent = selectedFilter === category ? ActiveFilterButtonText : FilterButtonText;
+          return (
+         <FilterButtonComponent
             key={category}
-            style={[styles.filterButton, selectedFilter === category && styles.activeFilterButton]}
             onPress={() => filterTasks(category)}
           >
-            <Text
-              style={[styles.filterButtonText, selectedFilter === category && styles.activeFilterButtonText]}>{category}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+
+            <FilterButtonTextComponent>{category}</FilterButtonTextComponent>
+          </FilterButtonComponent>
+        );
+        })
+        }
+      </FilterContainer>
       <FlatList
         data={filteredIncompleteTasks} // Folosește filteredIncompleteTasks
         renderItem={({ item }) => (
@@ -264,117 +240,28 @@ const Welcome = () => {
             {item.category === 'Personal' && <Icon name="person" size={24} color={Colors.primary.dark} />}
             <TaskText>{item.title}</TaskText>
             <DeleteButton onPress={() => deleteTask(item._id)} />
-            <EditButton onPress={() => openEditModal(item._id, item.title)} />
+            <EditButton onPress={() => openEditModal(item)} />
             <Checkbox isChecked={item.completed} onPress={() => toggleTaskCompleted(item._id, !item.completed)} />
           </TaskView>
         )}
         keyExtractor={item => item._id.toString()}
       />
-      <Text style={styles.completedTasksText}>Completed Tasks</Text>
+      <CompletedTasksText>Completed Tasks</CompletedTasksText>
       <FlatList
         data={filteredCompletedTasks} // Folosește filteredCompletedTasks
         renderItem={({ item }) => (
           <TaskView>
-            {item.category === 'Work' && <Icon name="work" size={24} color={Colors.primary.dark} />}
-            {item.category === 'Personal' && <Icon name="person" size={24} color={Colors.primary.dark} />}
-            <TaskText style={styles.completedTaskText}>{item.title}</TaskText>
+            <Icon name={item.category === 'Work' ? "work" : "person"}  size={24} color={Colors.primary.dark} />
+            <CompletedTaskText>{item.title}</CompletedTaskText>
             <DeleteButton onPress={() => deleteTask(item._id)} />
           </TaskView>
         )}
         keyExtractor={item => item._id.toString()}
       />
-      <ToDoModal visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)} value={newTitle}
-                 onChangeText={setNewTitle} formik={formik} onPress={() => saveTask(currentTaskId, newTitle)} />
+      <ToDoModal visible={isModalVisible} onModalClose={() => setIsModalVisible(false)} todo={{...todo}}
+                onSave={saveTask} />
     </WelcomeContainer>
   );
 };
-
-const styles = StyleSheet.create({
-
-
-  dateText: {
-    fontSize: 16,
-    color: Colors.grey.darker,
-    marginTop: 5,
-    fontStyle: 'italic',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  addButton: {
-    position: 'relative',
-    backgroundColor: Colors.primary.main,
-    borderRadius: 30,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    zIndex: 999,
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  filterButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: Colors.primary.main,
-  },
-  activeFilterButton: {
-    backgroundColor: Colors.primary.main,
-  },
-  filterButtonText: {
-    color: Colors.primary.main,
-    fontWeight: 'bold',
-  },
-  activeFilterButtonText: {
-    color: Colors.white,
-  },
-  completedTaskText: {
-    textDecorationLine: 'line-through',
-    color: Colors.primary.dark,
-  },
-  completedTasksText: {
-    marginTop: 20,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.black,
-  },
-  logoutButton: {
-    position: 'absolute',
-    top: 50,
-    right: 10,
-  },
-  modalView: {
-    backgroundColor: Colors.primary.light,
-    padding: 20,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  input: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: Colors.grey.darker,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    color: Colors.black,
-  },
-  modalButton: {
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: Colors.white,
-    fontWeight: 'bold',
-  },
-
-});
 
 export default Welcome;

@@ -224,3 +224,77 @@ export const GreetingText = styled.Text`
     align-self: center;
     top: 10px;
     color: ${Colors.black};`;
+export const DateText = styled.Text`
+    font-size: 16px;
+    color: ${Colors.grey.darker};
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: bold;
+    align-self: center;
+ `;
+
+export const AddButton = styled.TouchableOpacity`
+    position: relative;
+    background-color: ${Colors.primary.main};
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    elevation: 5;
+    z-index: 999;
+    align-self: center;
+    margin-bottom: 20px;
+    `;
+
+export const FilterContainer = styled.View`
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  `;
+
+export const FilterButton = styled.TouchableOpacity`
+    border-radius: 20px; 
+    padding: 10px 20px;
+    border-width: 1px;
+    border-color: ${Colors.primary.main};
+  `;
+
+export const ActiveFilterButton = styled.TouchableOpacity`
+    border-radius: 20px;
+    border-width: 1px;
+    padding: 10px 20px;
+    border-color: ${Colors.primary.main};
+    background-color: ${Colors.primary.main};
+`;
+
+export const FilterButtonText = styled.Text`
+      color: ${Colors.primary.main};
+      font-weight: bold;
+`;
+
+export const ActiveFilterButtonText = styled.Text`
+      color: ${Colors.white};
+      font-weight: bold;
+`;
+
+export const CompletedTaskText = styled.Text`
+  font-size: 16px;
+  color: ${Colors.black};
+  flex: 1; 
+  text-decoration-line: line-through;
+  color: ${Colors.primary.dark};
+`;
+
+export const CompletedTasksText = styled.Text`
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: ${Colors.black};
+ `;
+
+export const LogoutButton = styled.TouchableOpacity`
+    position: absolute;
+    top: 50px;
+    right: 10px;
+`;

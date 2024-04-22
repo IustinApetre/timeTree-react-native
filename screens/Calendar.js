@@ -7,6 +7,7 @@ import { baseUrl } from '../base/config';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { useFormik } from 'formik';
 import moment from 'moment';
+import { ToDoModal } from '../components/ToDoModal';
 
 // Define colors
 export const Colors = {
@@ -22,6 +23,8 @@ export const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
   const [tasksForSelectedDate, setTasksForSelectedDate] = useState([]);
   const [markedDates, setMarkedDates] = useState({});
+  const [isTaskModalVisible, setIsTaskModalVisible] = useState(false);
+  const [todo, setTodo] = useState();
 
   useEffect(() => {
 
@@ -74,8 +77,8 @@ export const Calendar = () => {
 
         await axios.post(`${baseUrl}/task/tasks`, {
           user: storedCredentials._id,  // Asigură-te că acest câmp este trimis corect
-          title: values.title,
-          category: values.category,
+          title: todo.title,
+          category: todo.category,
           createdAt: formattedDate,  // Data selectată convertită în ISO string
         }).then(response => {
           // Handle success
@@ -122,6 +125,16 @@ export const Calendar = () => {
       })
       .catch(error => console.log(error))
   };
+  const onAddTodo = () => {
+    setTodo({title: '', category: 'Personal'});
+    setIsTaskModalVisible(true);
+  }
+
+  const onAddTodoFromModal = (id, title, category) => {
+    setTodo({title,category});
+    formik.handleSubmit();
+    setIsTaskModalVisible(false);
+  }
   return (
     <View style={{ flex: 1, paddingTop: 50 }}>
       <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
@@ -138,13 +151,7 @@ export const Calendar = () => {
         headerTitleStyle={{ color: Colors.black }}
       />
       <View style={styles.taskInputContainer}>
-        <TextInput
-          style={styles.taskInput}
-          placeholder="Task Title"
-          value={formik.values.title}
-          onChangeText={formik.handleChange('title')}
-        />
-        <TouchableOpacity style={styles.addButton} onPress={formik.handleSubmit}>
+        <TouchableOpacity style={styles.addButton} onPress={onAddTodo}>
           <Text style={styles.addButtonText}>Add Task</Text>
         </TouchableOpacity>
       </View>
@@ -153,6 +160,7 @@ export const Calendar = () => {
           data={tasksForSelectedDate}
           renderItem={({ item }) => (
             <View style={styles.taskItem}>
+              <Icon name={item.category === 'Work' ? "work" : "person"}  size={24} color={Colors.primary.dark} />
               <Text style={styles.taskTitle}>{item.title}</Text>
               <TouchableOpacity onPress={() => deleteTask(item._id)}>
                 <Icon name="delete" size={24} color={Colors.secondary.main} />
@@ -162,6 +170,8 @@ export const Calendar = () => {
           keyExtractor={(item) => item._id.toString()}
         />
       </View>
+      <ToDoModal visible={isTaskModalVisible} onModalClose={() => setIsTaskModalVisible(false)} todo={{...todo}}
+                 onSave={onAddTodoFromModal} />
     </View>
   );
 };

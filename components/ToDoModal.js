@@ -1,42 +1,61 @@
 import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Colors } from './style';
 import { Picker } from '@react-native-picker/picker';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as styles from './style';
+import { ModalButton, ModalButtonText, ModalView, TodoInput } from './styleModal';
 
 export function ToDoModal(props) {
+
+  const [title,setTitle] = useState( '');
+  const [category,setCategory] = useState('');
+  useEffect(() => {
+    if(props.todo) {
+      setTitle(props.todo.title);
+      setCategory(props.todo.category);
+    }
+  }, [props.todo])
+
   return <Modal visible={props.visible} animationType='slide' onRequestClose={props.onRequestClose}>
-    <View style={styles.modalView}>
-      <TextInput
-        style={[styles.input, { backgroundColor: Colors.white, marginBottom: 20 }]}
-        value={props.value}
-        onChangeText={props.onChangeText}
+    <ModalView>
+      <TodoInput
+        value={title}
+        onChangeText={setTitle}
         placeholder='Enter task title'
         placeholderTextColor={Colors.grey.darker}
       />
       <Text>Select Task Category:</Text>
       <Picker
-        selectedValue={props.formik.values.category}
-        onValueChange={props.formik.handleChange('category')}
-        style={{ height: 50, width: '100%' }}
+        selectedValue={category}
+        onValueChange={setCategory}
+        style={{height: 50,
+          width: '100%', }}
       >
         <Picker.Item label='Personal' value='Personal' />
         <Picker.Item label='Work' value='Work' />
       </Picker>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity
-          style={[styles.modalButton, { backgroundColor: Colors.secondary.main }]}
-          onPress={props.onPress}
+        <ModalButton
+          style={{backgroundColor: Colors.secondary.main }}
+          onPress={() => {
+            setCategory('');
+            setTitle('')
+            props.onSave(props.todo._id, title, category);
+          }}
         >
-          <Text style={styles.modalButtonText}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.modalButton, { backgroundColor: Colors.grey.lighter }]}
-          onPress={props.onRequestClose}
+          <ModalButtonText>Save</ModalButtonText>
+        </ModalButton>
+        <ModalButton
+          style={{ backgroundColor: Colors.grey.lighter }}
+          onPress={() => {
+            props.onModalClose();
+            setCategory('');
+            setTitle('');
+          }}
         >
-          <Text style={styles.modalButtonText}>Cancel</Text>
-        </TouchableOpacity>
+          <ModalButtonText>Cancel</ModalButtonText>
+        </ModalButton>
       </View>
-    </View>
+    </ModalView>
   </Modal>;
 }
