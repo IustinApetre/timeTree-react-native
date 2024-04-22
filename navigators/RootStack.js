@@ -22,7 +22,7 @@ const RootStack = () => {
     return(
       <CredentialsContext.Consumer>
         { ({storedCredentials}) =>(
-          <NavigationContainer>
+
             <Stack.Navigator
               screenOptions={{
                 headerStyle: {
@@ -47,7 +47,7 @@ const RootStack = () => {
 
 
             </Stack.Navigator>
-          </NavigationContainer>
+
         )}
       </CredentialsContext.Consumer>
     );

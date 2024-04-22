@@ -13,12 +13,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './components/CredentialsContext';
 import { View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import BottomTabNavigator from './components/BottomTabNavigator';
 
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
   const [storedCredentials, setStoredCredentials] = useState('');
-
+  const [menuVisible, setMenuVisible] = useState(false);
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
   const checkLoginCredentials = async () => {
     const result = await AsyncStorage
       .getItem(`timeTreeCredentials`);
@@ -59,10 +64,10 @@ export default function App() {
 
   }
   return (
-
-      <CredentialsContext.Provider value={{ storedCredentials, setStoredCredentials }}>
-        <RootStack />
-      </CredentialsContext.Provider>);
-
-
+    <CredentialsContext.Provider value={{ storedCredentials, setStoredCredentials }}>
+      <NavigationContainer>
+        {storedCredentials ? <BottomTabNavigator /> : <RootStack />}
+      </NavigationContainer>
+    </CredentialsContext.Provider>
+  );
 }

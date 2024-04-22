@@ -28,6 +28,7 @@ import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import KeyBoardAvoidingWrapper from '../components/KeyBoardAvoidingWrapper';
 import axios from 'axios';
+import { baseUrl } from '../base/config';
 
 
 const Signup = ({ navigation }) => {
@@ -65,7 +66,7 @@ const Signup = ({ navigation }) => {
 
   const handleSignup = (credentials, setSubmitting) => {
     handleMessage(null);
-    const url = `https://fierce-lowlands-23983-82fa6bb73787.herokuapp.com/user/signup`
+    const url = `${baseUrl}/user/signup`
 
     axios
       .post(url, credentials)
@@ -218,6 +219,7 @@ const Signup = ({ navigation }) => {
               </StyledFormArea>
             )}
           </Formik>
+
         </InnerContainer>
       </StyledContainer>
     </KeyBoardAvoidingWrapper>

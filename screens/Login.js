@@ -43,6 +43,7 @@ const {primary, } = Colors;
 import KeyBoardAvoidingWrapper from '../components/KeyBoardAvoidingWrapper';
 //api CLIENT
 import axios from 'axios';
+import { MyTextInput } from '../base/MyTextInput';
 
 const Login = ({navigation}) => {
   const [hidePassword, setHidePassword] = useState(true);
@@ -189,18 +190,8 @@ const persistLogin = (credentials, message, status) => {
                 )}
                 <Line />
 
-                {!googleSubmitting && (<StyledButton google={true} onPress={handleGoogleSignin}>
 
-                  <Fontisto name={"google"} color={Colors.white} size={25} />
-                  <ButtonText google={true}> Sign in with Google </ButtonText>
 
-                </StyledButton>)}
-                {googleSubmitting&& (<StyledButton google={true} disabled={true}>
-
-                   <ActivityIndicator size="large" color={Colors.primary.main} />
-                  <ButtonText google={true}> Sign in with Google </ButtonText>
-
-                </StyledButton>)}
                 <ExtraView>
                   <ExtraText>Don't have an account already?</ExtraText>
                   <TextLink onPress={() => navigation.navigate('Signup')}>
@@ -215,23 +206,6 @@ const persistLogin = (credentials, message, status) => {
     </KeyBoardAvoidingWrapper>
   );
 };
-const MyTextInput = ({label,icon,isPassword,hidePassword,setHidePassword, ...props}) => {
-    return(
-        <View>
-<LeftIcon>
-    <Octicons name={icon} size={30}/>
-</LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-          {isPassword && (
-            <RightIcon onPress={()=> setHidePassword(!hidePassword)}>
 
-              <Ionicons name={hidePassword ? 'eye-off-outline' : 'eye-outline'} size={30} color={Colors.gray} />
-            </RightIcon>
-          )}
-        </View>
-    )
-
-}
 
 export default Login;
