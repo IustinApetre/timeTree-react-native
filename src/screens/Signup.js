@@ -2,7 +2,7 @@ import React, { useState,useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { Octicons, Ionicons } from "@expo/vector-icons";
-import { CredentialsContext } from '../components/CredentialsContext';
+import { CredentialsContext } from '../contexts/CredentialsContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   StyledContainer,
@@ -23,7 +23,7 @@ import {
   ExtraView,
   TextLink,
   TextLinkContent,
-} from '../components/style';
+} from '../style';
 import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import KeyBoardAvoidingWrapper from '../components/KeyBoardAvoidingWrapper';
@@ -39,7 +39,7 @@ const Signup = ({ navigation }) => {
   const [messageType, setMessageType] = useState();
 
   //context
-  const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+  const {setStoredCredentials} = useContext(CredentialsContext);
   const persistSignup = (credentials, message, status) => {
     AsyncStorage.setItem(`timeTreeCredentials`, JSON.stringify(credentials))
       .then(()=>{

@@ -1,20 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
-
-//React Navigation stack
-import RootStack from './navigators/RootStack';
-
-// appLoading
+import React, { useState, useEffect } from 'react';
+import RootStack from './src/navigators/RootStack';
 import * as SplashScreen from 'expo-splash-screen';
-
-//async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//credentials context
-import { CredentialsContext } from './components/CredentialsContext';
-import { View } from 'react-native';
+import { CredentialsContext } from './src/contexts/CredentialsContext';
 import { NavigationContainer } from '@react-navigation/native';
-import BottomTabNavigator from './components/BottomTabNavigator';
+import BottomTabNavigator from './src/components/BottomTabNavigator';
 
 
 export default function App() {
@@ -38,17 +28,14 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Keep the splash screen visible while we fetch resources
         await SplashScreen.preventAutoHideAsync();
         await checkLoginCredentials();
       } catch (e) {
         console.warn(e);
       } finally {
-        // Tell the application to render
         setAppReady(true);
       }
     }
-
     prepare();
   }, []);
 

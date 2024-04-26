@@ -1,31 +1,19 @@
 import React,{useState, useContext} from 'react';
 import {StatusBar} from 'expo-status-bar';
-import{View, ActivityIndicator} from 'react-native';
-
-//formik
+import{ActivityIndicator} from 'react-native';
 import {Formik} from 'formik';
-
-//async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//credentials context
-import { CredentialsContext } from '../components/CredentialsContext';
+import { CredentialsContext } from '../contexts/CredentialsContext';
 
 import * as Google from 'expo-google-app-auth';
-
-// icons
-import {Octicons,Ionicons, Fontisto} from "@expo/vector-icons";
 import {
   StyledContainer,
   InnerContainer,
   PageLogo, PageTitle,
   SubTitle, StyledFormArea,
-  StyledTextInput,
-  LeftIcon,
-  StyledInputLabel,
   StyledButton,
   ButtonText,
-  Colors, RightIcon,
+  Colors,
   MsgBox,
   Line,
   ExtraText,
@@ -33,7 +21,7 @@ import {
   TextLink,
   TextLinkContent,
 
-} from '../components/style';
+} from '../style';
 
 
 
@@ -136,7 +124,7 @@ const persistLogin = (credentials, message, status) => {
       <StyledContainer>
         <StatusBar style={"light"}></StatusBar>
         <InnerContainer>
-          <PageLogo resizeMode="cover" source={require('./../assets/img/logo.png')}></PageLogo>
+          <PageLogo resizeMode="cover" source={require('../../assets/img/logo.png')}></PageLogo>
           <PageTitle>TimeTree</PageTitle>
           <SubTitle> Account Login</SubTitle>
           <Formik

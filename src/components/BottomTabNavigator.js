@@ -2,7 +2,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Colors } from './style';
+import { Colors } from '../style';
 import Welcome from '../screens/Welcome';
 import { Calendar } from '../screens/Calendar';
 import { QuoteOfToday } from '../screens/QuoteOfToday';

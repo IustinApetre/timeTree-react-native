@@ -1,4 +1,4 @@
-import { Colors } from './style';
+import { Colors } from '../style';
 import styled from 'styled-components/native';
 
 export const ModalView = styled.View`

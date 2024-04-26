@@ -11,15 +11,14 @@ import {
   TaskText,
   TaskView,
   WelcomeContainer,
-} from '../components/style';
-import { Alert, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
+} from '../style';
+import { Alert, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CredentialsContext } from '../components/CredentialsContext';
+import { CredentialsContext } from '../contexts/CredentialsContext';
 import { useFormik } from 'formik';
 import { baseUrl } from '../base/config';
 import axios from 'axios';
 import moment from 'moment';
-import { Picker } from '@react-native-picker/picker';
 
 import { ToDoModal } from '../components/ToDoModal';
 

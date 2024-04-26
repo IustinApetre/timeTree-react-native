@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Colors, LeftIcon, RightIcon, StyledInputLabel, StyledTextInput } from '../components/style';
+import { Colors, LeftIcon, RightIcon, StyledInputLabel, StyledTextInput } from '../style';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 import React from 'react';
 

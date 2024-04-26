@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors } from '../components/style'; // Import the Colors object
-import { CredentialsContext } from '../components/CredentialsContext';
+import { Colors } from '../style'; // Import the Colors object
+import { CredentialsContext } from '../contexts/CredentialsContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const quotes = [
   "The only way to do great work is to love what you do. - Steve Jobs",
@@ -68,7 +68,7 @@ export const QuoteOfToday = () => {
       <TouchableOpacity onPress={handleLogoutPress} style={styles.logoutButton}>
         <Icon name="logout" size={30} color={Colors.black} />
       </TouchableOpacity>
-      <ImageBackground source={require('../assets/img/logo.png')} style={styles.backgroundImage}>
+      <ImageBackground source={require('../../assets/img/logo.png')} style={styles.backgroundImage}>
         <View style={styles.overlay}>
           <Animated.View style={{ ...styles.quoteContainer, opacity: fadeAnim }}>
             <Text style={styles.quoteText}>{quoteOfTheDay}</Text>

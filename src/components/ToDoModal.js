@@ -1,8 +1,7 @@
-import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Colors } from './style';
+import { Modal, Text, View } from 'react-native';
+import { Colors } from '../style';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
-import * as styles from './style';
 import { ModalButton, ModalButtonText, ModalView, TodoInput } from './styleModal';
 
 export function ToDoModal(props) {

@@ -1,22 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Button, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Calendar as RNCalendar } from 'react-native-calendars';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { baseUrl } from '../base/config';
-import { CredentialsContext } from '../components/CredentialsContext';
+import { CredentialsContext } from '../contexts/CredentialsContext';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import { ToDoModal } from '../components/ToDoModal';
-
-// Define colors
-export const Colors = {
-  primary: { main: "#609966", dark: "#304d33", light: "#b0ccb3", lighter: "#d3dfd4" },
-  secondary: { main: "#996093", light: "#AE7FAA", lighter: "#D6BFD4", dark: "#5C3958" },
-  grey: { light: "#F2EFE5", dark: "#E3E1D9", darker: "#C7C8CC", darkest: "#B4B4B8" },
-  white: "#FFFFFF",
-  black: "#000",
-};
+import { Colors } from '../style';
 
 export const Calendar = () => {
   const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
